@@ -10,7 +10,7 @@ Site non officiel pour générer des images avec l'API NovelAI, prêt pour Verce
 - Sampler, steps, CFG, CFG rescale et seed
 - Aperçu, téléchargement PNG et historique en mémoire dans l'onglet
 - API Vercel côté serveur pour éviter les erreurs CORS
-- Jeton demandé à chaque session, jamais stocké par le site
+- Jeton stocké côté serveur dans la variable d'environnement Vercel \`NOVELAI_API_KEY\`
 
 ## Déploiement Vercel
 
@@ -18,7 +18,7 @@ Site non officiel pour générer des images avec l'API NovelAI, prêt pour Verce
 2. Choisir **Other** comme Framework Preset si nécessaire.
 3. Garder Root Directory `./` et aucune commande de build.
 4. Cliquer sur **Deploy**.
-5. Après le déploiement, ouvrir le site et saisir son **Persistent API Token** NovelAI.
+5. Dans **Settings → Environment Variables**, créer \`NOVELAI_API_KEY\` avec son **Persistent API Token** NovelAI (Production, de préférence type Secret).\n6. Redéployer pour que la variable prenne effet.
 
 La fonction `api/generate.js` appelle `https://image.novelai.net/ai/generate-image` avec `Accept: application/json` et renvoie les images générées en base64.
 
@@ -28,7 +28,7 @@ Installer Vercel CLI avec `npm install -g vercel` puis lancer `vercel dev`.
 
 ## Sécurité et limitations
 
-Le jeton est transmis à la fonction Vercel pour chaque génération, puis à NovelAI, sans stockage dans localStorage ou une base de données. Ne jamais committer de jeton dans GitHub. Pour un site public, chaque visiteur doit utiliser son propre jeton. Si vous décidez d'utiliser une clé partagée serveur, ajoutez au préalable une authentification, des quotas et une protection anti-abus.
+Le jeton est lu par la fonction Vercel via \`process.env.NOVELAI_API_KEY\` et envoyé uniquement à NovelAI. Il n'est pas transmis au navigateur. Ne jamais committer de jeton dans GitHub. **Attention :** cette version utilise une clé partagée côté serveur. Même si vous êtes seul à connaître l'adresse du site, son endpoint peut être appelé par d'autres. Activez une protection d'accès au déploiement avant de l'utiliser avec votre jeton personnel.
 
 Vercel impose des limites sur la taille des réponses et la durée des fonctions : les générations très longues ou volumineuses peuvent échouer. Les modèles V5 sont expérimentaux. Les appels réels nécessitent un jeton NovelAI valide et peuvent consommer des Anlas.
 
