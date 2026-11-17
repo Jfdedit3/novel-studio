@@ -9,9 +9,9 @@ module.exports = async function handler(req,res) {
   if(req.method !== 'POST') return res.status(405).json({error:'Méthode non autorisée.'});
   try {
     const body = req.body || {};
-    const token = typeof body.token === 'string' ? body.token.trim() : '';
+    const token = process.env.NOVELAI_API_KEY?.trim() || '';
     const prompt = typeof body.prompt === 'string' ? body.prompt.trim() : '';
-    if(!token || token.length > 4096) return res.status(400).json({error:'Jeton API NovelAI requis.'});
+    if(!token) return res.status(503).json({error:'La variable NOVELAI_API_KEY manque dans Vercel. Ajoutez-la dans Settings → Environment Variables puis redéployez.'});
     if(!prompt || prompt.length > 20000) return res.status(400).json({error:'Prompt manquant ou trop long.'});
     if(!MODELS.has(body.model)) return res.status(400).json({error:'Modèle non pris en charge.'});
     if(!SAMPLERS.has(body.sampler)) return res.status(400).json({error:'Sampler non pris en charge.'});
