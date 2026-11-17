@@ -1,0 +1,12 @@
+{
+  "name": "novel-studio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "NovelAI image generation studio for Vercel",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
